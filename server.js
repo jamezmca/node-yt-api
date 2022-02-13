@@ -1,5 +1,7 @@
+//can restart nodemon by typing rs in terminal
 const cheerio = require('cheerio')
 const axios = require('axios')
+const { google } = require('googleapis')
 const app = require('express')()
 const port = 5000
 app.use(require('cors')())
@@ -25,6 +27,7 @@ app.get('/:url', async (req, res) => {
         const { data: html } = await axios.get('https://www.youtube.com/watch?v=MBqS1kYzwTc')
         const $ = cheerio.load(html)
         // do res.status(200).send(html) to render the page to show what ur getting
+        // res.json(data)
         res.status(200).send({ html: $.html() })
 
     } catch (err) {
