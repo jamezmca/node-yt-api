@@ -17,16 +17,18 @@ app.get('/', async (req, res) => {
 })
 
 app.get('/:url', async (req, res) => {
+    console.log('nice')
     //going to demonstrate how to use queries or params in the case when you want to look at stats of someone elses video
     const { url } = req.params
     const { url2 } = req.query
     try {
         const { data: html } = await axios.get('https://www.youtube.com/watch?v=MBqS1kYzwTc')
         const $ = cheerio.load(html)
+        // do res.status(200).send(html) to render the page to show what ur getting
         res.status(200).send({ html: $.html() })
 
     } catch (err) {
-        res.status(500).send(`<div>ERROR: <h1>${url}!</h1><h1>${url2}</h1></div>`) //replace later
+        res.status(500).send(`<div>ERROR (propbably a shitty url): <h1>${url}!</h1><h1>${url2}</h1></div>`) //replace later
     }
 
 })
