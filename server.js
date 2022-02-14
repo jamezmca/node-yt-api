@@ -28,6 +28,11 @@ cron(2000, async () => {
         num: num.num + 1
     })
     console.log(data)
+
+    const youtube = google.youtube({
+        version: 'v3',
+        auth
+    })
 })
 
 // API routes
