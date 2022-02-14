@@ -2,6 +2,7 @@
 const cheerio = require('cheerio')
 const axios = require('axios')
 const { google } = require('googleapis')
+const { readDb, writeDb } = require('./dbFunctions') //has to be an object
 const app = require('express')()
 const port = 5000
 app.use(require('cors')())
@@ -21,6 +22,11 @@ function cron(ms, fn) {
 cron(2000, async () => {
     const res = await axios.get('http://localhost:5000/test')
     const { data } = res
+    const num = readDb()
+    console.log(num.num)
+    writeDb({
+        num: num.num + 1
+    })
     console.log(data)
 })
 
