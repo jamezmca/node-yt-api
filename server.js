@@ -6,6 +6,25 @@ const app = require('express')()
 const port = 5000
 app.use(require('cors')())
 
+// cron function
+function cron(ms, fn) {
+    async function cb() {
+        clearTimeout(timeout)
+        await fn()
+        timeout = setTimeout(cb, ms)
+    }
+    let timeout = setTimeout(cb, ms)
+    return () => { }
+}
+
+// setup cron job
+cron(2000, async () => {
+    const res = await axios.get('http://localhost:5000/test')
+    const { data } = res
+    console.log(data)
+})
+
+// API routes
 app.get('/', async (req, res) => {
     //call youtube api get numbers of views on video
     try {
@@ -16,6 +35,10 @@ app.get('/', async (req, res) => {
     } catch (err) {
         res.status(500).send({ message: 'Server error :\'(' })
     }
+})
+
+app.get('/test', (req, res) => {
+    res.send('Nice')
 })
 
 app.get('/:url', async (req, res) => {
@@ -36,9 +59,13 @@ app.get('/:url', async (req, res) => {
 
 })
 
+
+
 app.post('/', (req, res) => {
     //going to demonstrate how to use body information and headers
     const { data } = req.body
 })
+
+
 
 app.listen(port, () => console.log(`Server started on port ${port}`))
