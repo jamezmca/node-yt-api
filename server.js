@@ -5,7 +5,10 @@ const { google } = require('googleapis')
 const { readDb, writeDb } = require('./dbFunctions') //has to be an object
 const app = require('express')()
 const port = 5000
+require('dotenv').config()
 app.use(require('cors')())
+
+const baseAPIUrl = 'https://www.googleapis.com/youtube/v3'
 
 // cron function
 function cron(ms, fn) {
@@ -29,10 +32,10 @@ cron(2000, async () => {
     })
     console.log(data)
 
-    const youtube = google.youtube({
-        version: 'v3',
-        auth
-    })
+    // const youtube = google.youtube({
+    //     version: 'v3',
+    //     auth
+    // })
 })
 
 // API routes
