@@ -1,14 +1,19 @@
 //can restart nodemon by typing rs in terminal
+require('dotenv').config()
 const cheerio = require('cheerio')
 const axios = require('axios')
 const { google } = require('googleapis')
 const { readDb, writeDb } = require('./dbFunctions') //has to be an object
+const OAuth2Data = require("./credentials.json");
+
 const app = require('express')()
 const port = 5000
-require('dotenv').config()
 app.use(require('cors')())
 
 const baseAPIUrl = 'https://www.googleapis.com/youtube/v3'
+const CLIENT_ID = OAuth2Data.installed.client_id
+const CLIENT_SECRET = OAuth2Data.installed.client_secret
+const REDIRECT_URL = OAuth2Data.installed.redirect_uris[0]
 
 // cron function
 function cron(ms, fn) {
