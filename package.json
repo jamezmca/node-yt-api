@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.js --ignore *.json",
+    "dev": "nodemon server.js --ignore db.json --ignore tokens.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
