@@ -48,15 +48,17 @@ function cron(ms, fn) {
 }
 
 // setup cron job
-cron(25000, async () => {
+cron(900000, async () => {
     const res = await axios.get('http://localhost:5000/test')
     const { data } = res
     console.log(data)
+    const tokens = readDb('tokens.json')
+    oauth2Client.setCredentials(tokens)
 
-    // const youtube = google.youtube({
-    //     version: 'v3',
-    //     auth
-    // })
+    const youtube = google.youtube({
+        version: 'v3',
+        auth: oauth2Client
+    })
 })
 
 // API routes
@@ -68,6 +70,13 @@ app.get('/', async (req, res) => { //gets redirected here
     writeDb({ refresh_token, access_token }, 'tokens.json')
     res.status(200).send('Success')
 })
+
+
+app.get('/test', (req, res) => {
+    res.send('Nice')
+})
+
+
 // app.get('/', async (req, res) => { //gets redirected here
 //     //call youtube api get numbers of views on video
 //     const { code } = req.query
@@ -80,10 +89,6 @@ app.get('/', async (req, res) => { //gets redirected here
 //         res.status(500).send({ message: 'Server error :\'(' })
 //     }
 // })
-
-app.get('/test', (req, res) => {
-    res.send('Nice')
-})
 
 // app.get('/:url', async (req, res) => {
 //     console.log('nice')
@@ -102,23 +107,23 @@ app.get('/test', (req, res) => {
 //     }
 
 // })
-app.get('/link/:url', async (req, res) => {
-    console.log('nice')
-    //going to demonstrate how to use queries or params in the case when you want to look at stats of someone elses video
-    const { url } = req.params
-    const { url2 } = req.query
-    try {
-        const { data: html } = await axios.get('https://www.youtube.com/watch?v=MBqS1kYzwTc')
-        const $ = cheerio.load(html)
-        // do res.status(200).send(html) to render the page to show what ur getting
-        // res.json(data)
-        res.status(200).send({ html: $.html() })
+// app.get('/link/:url', async (req, res) => {
+//     console.log('nice')
+//     //going to demonstrate how to use queries or params in the case when you want to look at stats of someone elses video
+//     const { url } = req.params
+//     const { url2 } = req.query
+//     try {
+//         const { data: html } = await axios.get('https://www.youtube.com/watch?v=MBqS1kYzwTc')
+//         const $ = cheerio.load(html)
+//         // do res.status(200).send(html) to render the page to show what ur getting
+//         // res.json(data)
+//         res.status(200).send({ html: $.html() })
 
-    } catch (err) {
-        res.status(500).send(`<div>ERROR (propbably a shitty url): <h1>${url}!</h1><h1>${url2}</h1></div>`) //replace later
-    }
+//     } catch (err) {
+//         res.status(500).send(`<div>ERROR (propbably a shitty url): <h1>${url}!</h1><h1>${url2}</h1></div>`) //replace later
+//     }
 
-})
+// })
 
 
 
