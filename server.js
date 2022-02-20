@@ -10,6 +10,7 @@ const app = require('express')()
 const port = 5000
 app.use(require('cors')())
 
+const videoId = '9gqVvjfCC1o'
 const baseAPIUrl = 'https://www.googleapis.com/youtube/v3'
 const CLIENT_ID = OAuth2Data.web.client_id
 const CLIENT_SECRET = OAuth2Data.web.client_secret
@@ -59,6 +60,32 @@ cron(900000, async () => {
         version: 'v3',
         auth: oauth2Client
     })
+
+    const result = await youtube.videos.list({
+        id: videoId,
+        part: 'statistics,snippet'
+    })
+    const video = result.data.items[0]
+    const { title } = video.snippet
+    const { viewCount } = video.statistics
+    const newTitle = `This video has ${viewCount} views`
+
+    //update video
+    if (!title.includes(viewCount.toString())) {
+        const updatedResult = await youtube.videos.update({
+            requestBody: {
+                id: videoId,
+                snippet: {
+                    title: newTitle,
+                    categoryId: video.snippet.categoryId
+                }
+            },
+            part: 'snippet'
+        })
+        console.log(newTitle)
+    } else {
+        console.log('No update')
+    }
 })
 
 // API routes
