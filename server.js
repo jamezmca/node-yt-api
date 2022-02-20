@@ -45,7 +45,7 @@ function cron(ms, fn) {
 }
 
 // setup cron job
-cron(60000, async () => {
+cron(120000, async () => {
     const tokens = readDb('tokens.json')
     oauth2Client.setCredentials(tokens)
 
