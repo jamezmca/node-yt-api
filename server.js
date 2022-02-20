@@ -90,7 +90,6 @@ cron(900000, async () => {
 
 // API routes
 app.get('/', async (req, res) => { //gets redirected here
-    //call youtube api get numbers of views on video
     const { code } = req.query
     const { tokens } = await oauth2Client.getToken(code)
     const { refresh_token, access_token } = tokens
