@@ -7,7 +7,7 @@ const app = require('express')()
 const port = 5000
 app.use(require('cors')())
 
-const videoIds = ['9gqVvjfCC1o']
+const videoIds = ['9gqVvjfCC1o', 'f0V55s3FLog']
 const CLIENT_ID = OAuth2Data.web.client_id
 const CLIENT_SECRET = OAuth2Data.web.client_secret
 const REDIRECT_URL = OAuth2Data.web.redirect_uris[0]
@@ -45,7 +45,7 @@ function cron(ms, fn) {
 }
 
 // setup cron job
-cron(120000, async () => {
+cron(60000, async () => {
     const tokens = readDb('tokens.json')
     oauth2Client.setCredentials(tokens)
 
@@ -62,16 +62,18 @@ cron(120000, async () => {
         const video = result.data.items[0]
         const { title } = video.snippet
         const { viewCount } = video.statistics
-        const newTitle = `This video has ${viewCount} views`
+        const newTitle = vidId === '9gqVvjfCC1o' ? `This video has ${viewCount} views` :
+            vidId === 'f0V55s3FLog' ? `How To: This Video Has ${viewCount} Views (pt1)` :
+                `How To: This Video Has ${viewCount} Views (pt2)`
 
         //update video
         if (!title.includes(viewCount.toString())) {
             const updatedResult = await youtube.videos.update({
                 requestBody: {
-                    id: videoId,
+                    id: vidId,
                     snippet: {
                         title: newTitle,
-                        description: video.snippet.categoryId,
+                        description: video.snippet.description,
                         categoryId: video.snippet.categoryId
                     }
                 },
