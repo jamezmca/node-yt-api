@@ -7,7 +7,7 @@ const app = require('express')()
 const port = 5000
 app.use(require('cors')())
 
-const videoId = '9gqVvjfCC1o'
+const videoIds = ['9gqVvjfCC1o']
 const CLIENT_ID = OAuth2Data.web.client_id
 const CLIENT_SECRET = OAuth2Data.web.client_secret
 const REDIRECT_URL = OAuth2Data.web.redirect_uris[0]
@@ -54,31 +54,40 @@ cron(120000, async () => {
         auth: oauth2Client
     })
 
-    const result = await youtube.videos.list({
-        id: videoId,
-        part: 'statistics,snippet'
-    })
-    const video = result.data.items[0]
-    const { title } = video.snippet
-    const { viewCount } = video.statistics
-    const newTitle = `This video has ${viewCount} views`
-
-    //update video
-    if (!title.includes(viewCount.toString())) {
-        const updatedResult = await youtube.videos.update({
-            requestBody: {
-                id: videoId,
-                snippet: {
-                    title: newTitle,
-                    categoryId: video.snippet.categoryId
-                }
-            },
-            part: 'snippet'
+    videoIds.forEach(async (vidId) => {
+        const result = await youtube.videos.list({
+            id: vidId,
+            part: 'statistics,snippet'
         })
-        console.log(newTitle)
-    } else {
-        console.log('No update')
-    }
+        const video = result.data.items[0]
+        const { title } = video.snippet
+        const { viewCount } = video.statistics
+        const newTitle = `This video has ${viewCount} views`
+
+        //update video
+        if (!title.includes(viewCount.toString())) {
+            const updatedResult = await youtube.videos.update({
+                requestBody: {
+                    id: videoId,
+                    snippet: {
+                        title: newTitle,
+                        description: video.snippet.categoryId,
+                        categoryId: video.snippet.categoryId
+                    }
+                },
+                part: 'snippet'
+            })
+            console.log(newTitle)
+        } else {
+            console.log('No update')
+        }
+    })
+
+
+
+
+
+
 })
 
 // API routes
