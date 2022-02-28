@@ -64,6 +64,7 @@ cron(120000, async () => {
             const video = result.data.items[0]
             const { title } = video.snippet
             const { viewCount } = video.statistics
+            console.log(viewCount)
             const newTitle = vidId === '9gqVvjfCC1o' ? `This video has ${viewCount} views` :
                 vidId === 'f0V55s3FLog' ? `How To: This Video Has ${viewCount} Views (pt1)` :
                     `How To: This Video Has ${viewCount} Views (pt2)`
