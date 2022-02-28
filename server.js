@@ -45,7 +45,7 @@ function cron(ms, fn) {
 }
 
 // setup cron job
-cron(60000, async () => {
+cron(120000, async () => {
     const tokens = readDb('tokens.json')
     oauth2Client.setCredentials(tokens)
 
@@ -55,34 +55,41 @@ cron(60000, async () => {
     })
 
     videoIds.forEach(async (vidId) => {
-        const result = await youtube.videos.list({
-            id: vidId,
-            part: 'statistics,snippet'
-        })
-        const video = result.data.items[0]
-        const { title } = video.snippet
-        const { viewCount } = video.statistics
-        const newTitle = vidId === '9gqVvjfCC1o' ? `This video has ${viewCount} views` :
-            vidId === 'f0V55s3FLog' ? `How To: This Video Has ${viewCount} Views (pt1)` :
-                `How To: This Video Has ${viewCount} Views (pt2)`
-
-        //update video
-        if (!title.includes(viewCount.toString())) {
-            const updatedResult = await youtube.videos.update({
-                requestBody: {
-                    id: vidId,
-                    snippet: {
-                        title: newTitle,
-                        description: video.snippet.description,
-                        categoryId: video.snippet.categoryId
-                    }
-                },
-                part: 'snippet'
+        try {
+            const result = await youtube.videos.list({
+                id: vidId,
+                part: 'statistics,snippet'
             })
-            console.log(newTitle)
-        } else {
-            console.log('No update')
+
+            const video = result.data.items[0]
+            const { title } = video.snippet
+            const { viewCount } = video.statistics
+            const newTitle = vidId === '9gqVvjfCC1o' ? `This video has ${viewCount} views` :
+                vidId === 'f0V55s3FLog' ? `How To: This Video Has ${viewCount} Views (pt1)` :
+                    `How To: This Video Has ${viewCount} Views (pt2)`
+
+            //update video
+            if (!title.includes(viewCount.toString())) {
+                const updatedResult = await youtube.videos.update({
+                    requestBody: {
+                        id: vidId,
+                        snippet: {
+                            title: newTitle,
+                            description: video.snippet.description,
+                            categoryId: video.snippet.categoryId
+                        }
+                    },
+                    part: 'snippet'
+                })
+                console.log(newTitle)
+            } else {
+                console.log('No update')
+            }
+        } catch (err) {
+            console.log(err)
         }
+    
+
     })
 
 
