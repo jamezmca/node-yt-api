@@ -66,8 +66,8 @@ cron(120000, async () => {
             const { viewCount } = video.statistics
             console.log(viewCount)
             const newTitle = vidId === '9gqVvjfCC1o' ? `This video has ${viewCount} views` :
-                vidId === 'f0V55s3FLog' ? `How To: This Video Has ${viewCount} Views (pt1)` :
-                    `How To: This Video Has ${viewCount} Views (pt2)`
+                vidId === 'f0V55s3FLog' ? `How To: This Video Has ${viewCount} Views (pt1) | Configure Google Oauth2` :
+                    `How To: This Video Has ${viewCount} Views (pt2) | Node Cron Jobs`
 
             //update video
             if (!title.includes(viewCount.toString())) {
